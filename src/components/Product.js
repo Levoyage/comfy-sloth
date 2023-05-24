@@ -4,8 +4,25 @@ import { formatPrice } from '../utils/helpers'
 import { FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 
-const Product = () => {
-  return <h4>product</h4>
+//我们已经用context传入image, name, price, id这些信息，现在拿出来用就是了
+const Product = ({ image, name, price, id }) => {
+  return (
+    <Wrapper>
+      <div className='container'>
+        <img src={image} alt={name} />
+        {/* ${id} 是一个占位符，用于表示变量 id 的值。这种语法可以让我们更方便地拼接字符串，尤其是在需要动态生成 URL 的时候。
+    在这个例子中，/products/${id} 表示一个商品的详情页面 URL */}
+        <Link to={`/products/${id}`} className='link'>
+          {/* 鼠标悬停的放大镜图标 */}
+          <FaSearch />
+        </Link>
+      </div>
+      <footer>
+        <h5>{name}</h5>
+        <p>${price / 100}</p>
+      </footer>
+    </Wrapper>
+  )
 }
 
 const Wrapper = styled.article`
@@ -64,4 +81,4 @@ const Wrapper = styled.article`
     letter-spacing: var(--spacing);
   }
 `
-export default Product
+export default Product;

@@ -15,7 +15,71 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 const SingleProductPage = () => {
-  return <h4>single product page</h4>
+  const { id } = useParams();
+  //错误后导航回主页需要这个钩子
+  const history = useHistory();
+  const {
+    //将single_product_loading属性的值分配给loading变量,下面2行同理
+    single_product_loading: loading,
+    single_product_error: error,
+    single_product: product,
+    fetchSingleProduct,
+  } = useProductsContext()
+
+  useEffect(() => {
+    fetchSingleProduct(`${url}${id}`)
+  }, [id])//加上id作为依赖性数组，表示函数在每次id改变时运行，当然不加这个数组也行
+
+  useEffect(() => {
+
+    if (error) {
+      setTimeout(() => {
+        history.push('/')
+      }, 3000)
+    }
+  }, [error])
+
+  if (loading) {
+    return <Loading />
+  }
+  if (error) {
+    return <Error />
+  }
+  const { name, price, description, stock, stars, reviews,
+    id: sku, company, images } = product
+  return (
+    <Wrapper>
+      <PageHero title={name} product />
+      <div className='section section-center page'>
+        <Link to='/products' className='btn'>
+          back to products
+        </Link>
+        <div className='product-center'>
+          <ProductImages images={images} />
+          <section className='content'>
+            <h2>{name}</h2>
+            <Stars stars={stars} reviews={reviews} />
+            <h5 className='price'>{formatPrice(price)}</h5>
+            <p className='desc'>{description}</p>
+            <p className='info'>
+              <span>Available:</span>
+              {stock > 0 ? 'In stock' : 'out of stock'}
+            </p>
+            <p className='info'>
+              <span>SKU:</span>
+              {sku}
+            </p>
+            <p className='info'>
+              <span>Brand:</span>
+              {company}
+            </p>
+            <hr />
+            {stock > 0 && <AddToCart product={product} />}
+          </section>
+        </div>
+      </div>
+    </Wrapper>
+  )
 }
 
 const Wrapper = styled.main`

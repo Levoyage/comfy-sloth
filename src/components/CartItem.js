@@ -4,8 +4,42 @@ import { formatPrice } from '../utils/helpers'
 import AmountButtons from './AmountButtons'
 import { FaTrash } from 'react-icons/fa'
 import { useCartContext } from '../context/cart_context'
-const CartItem = () => {
-  return <h4>cart item</h4>
+const CartItem = ({ id, image, name, color, price, amount }) => {
+  const { removeItem, toggleAmount } = useCartContext()
+  const increase = () => {
+    toggleAmount(id, 'inc')
+  }
+  const decrease = () => {
+    toggleAmount(id, 'dec')
+  }
+  return (
+    <Wrapper >
+      <div className='title'>
+        <img src={image} alt={name} />
+        <div>
+          <h5 className='name'>{name}</h5>
+          <p className='color'>
+            color:<span style={{ background: color }}></span>
+          </p>
+          {/* 这个css样式大窗口时会隐藏 */}
+          <h5 className='price-small'>{formatPrice(price)}</h5>
+        </div>
+      </div>
+      {/* 价格列 */}
+      <h5 className='price'>{formatPrice(price)}</h5>
+      {/* 数量列 */}
+      <AmountButtons amount={amount} increase={increase} decrease={decrease} />
+      {/* 总额列 */}
+      <h5 className='subtotal'>{formatPrice(price * amount)}</h5>
+      <button
+        type='button'
+        className='remove-btn'//红色按钮背景
+        //调用我们从context里grab的removeItem函数
+        onClick={() => removeItem(id)}>
+        <FaTrash />
+      </button>
+    </Wrapper>
+  )
 }
 
 const Wrapper = styled.article`
